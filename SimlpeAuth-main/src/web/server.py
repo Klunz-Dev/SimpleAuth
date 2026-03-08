@@ -72,13 +72,6 @@ async def get_account(user_id: int, session: SessionDep):
         print(e)
         return {'error': e}
 
-@app.put('/update_account/{user_id}', tags=['user'], summary='Update data account (user_id)')
-async def update_account(user_id: int):
-    ...
-
-@app.delete('/delete_account/{user_id}', tags=['user'], summary='Delete account (user_id)')
-async def delete_account():
-    ...
-
 if __name__ == '__main__':
+
     uvicorn.run(app, port=8080, host='127.0.0.8')
