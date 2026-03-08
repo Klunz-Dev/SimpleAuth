@@ -8,17 +8,3 @@ class CreateUser(BaseModel):
 
 class GetUser(BaseModel):
     id: int = Field(..., title="You're UID", min_length=1, max_length=16)
-
-
-class ReadUser(CreateUser):
-    id: int
-    username: str
-    mail: EmailStr
-
-class UpdateUser(CreateUser):
-    first_name: str = Field(..., title="You're new first name", min_length=1, max_length=16)
-    username: str = Field(..., title="You're new username", min_length=1, max_length=16)
-    mail: EmailStr = Field(..., title="You're new mail")
-
-class DeleteUser(BaseModel):
-    id: int
