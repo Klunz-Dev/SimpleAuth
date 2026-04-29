@@ -17,7 +17,8 @@ async def create_table():
 async def drop_table():
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-        
+
+
 async def get_current_user(user_name: str, session: AsyncSession):
     try:
         result = await session.execute(select(UserModel).where(UserModel.username == user_name))
@@ -27,8 +28,7 @@ async def get_current_user(user_name: str, session: AsyncSession):
     except Exception as e:
         return {'error': e}
 
-async def get_all_users(session: get_session()):
-    query = select(UserModel)
-    user = session.execute(query).scalars().all()
-
-    return user
+async def check_mail_and_username(session: AsyncSession, username: str, mail: str) -> bool:
+    result = await session.execute(select(UserModel).where(UserModel.username == username, UserModel.mail == mail))
+    user = result.scalars().all()
+    return user is not True

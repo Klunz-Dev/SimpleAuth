@@ -3,6 +3,7 @@ from aiohttp.abc import HTTPException
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from schemes import *
+from src.database.db import check_mail_and_username
 from src.database.dep import SessionDep
 from src.database.db import get_current_user
 from src.database.db import create_table
@@ -42,26 +43,31 @@ async def create_account(creds: CreateUser, session: SessionDep):
         first_name = creds.first_name,
         username = creds.username,
         mail = creds.mail,
-        create_at = datetime.now().strftime('%H:%M:%S'),
+        create_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         hash_password = password,
         salt = salt
     )
 
-    session.add(new_user)
-    await session.commit()
-    await session.refresh(new_user)
+    valid_mail = str(creds.mail)
 
-    access_token = security.create_access_token(uid=new_user.username)
-    account_id = new_user.id
-    account_first_name = new_user.first_name
-    account_create_at = new_user.create_at
+    if await check_mail_and_username(session, username=creds.username, mail=valid_mail):
+        session.add(new_user)
+        await session.commit()
+        await session.refresh(new_user)
 
-    return{
-        'account ID': account_id,
-        'account first name': account_first_name,
-        'account create at': account_create_at,
-        'access token': access_token
-    }
+        access_token = security.create_access_token(uid=new_user.username)
+        account_id = new_user.id
+        account_first_name = new_user.first_name
+        account_create_at = new_user.create_at
+
+        return{
+            'account ID': account_id,
+            'account first name': account_first_name,
+            'account create at': account_create_at,
+            'access token': access_token
+        }
+    elif not await check_mail_and_username(session, username=creds.username, mail=valid_mail):
+        raise HTTPException(status_code=400, detail='This user already exists')
 
 @app.post('/get_account', tags=['user'], summary='Get user account (user_id)')
 async def get_account(creds: GetUser, session: SessionDep):
