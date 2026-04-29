@@ -10,6 +10,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 .idea
+.gitignore
 build/
 develop-eggs/
 dist/
@@ -79,6 +80,8 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+
+
 
 # IPython
 profile_default/
