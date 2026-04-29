@@ -1,6 +1,7 @@
 import uvicorn
 from aiohttp.abc import HTTPException
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from schemes import *
 from src.database.dep import SessionDep
 from src.database.db import get_current_user
@@ -13,9 +14,15 @@ from src.auth.jwt_token_settings import *
 
 app = FastAPI(title='SimpleAuth')
 
+app.add_middleware(CORSMiddleware, #type: ignore
+                   allow_origins=['*'],
+                   allow_methods=['*'],
+                   allow_headers=['*'])
+
+
 @app.get('/', tags=['system'], summary='base information')
 async def base_endpoint():
-    return '* Welcome to SimpleAuth'
+    return 'Welcome to SimpleAuth'
 
 @app.post('/create_table_db', tags=['database'], summary='create table')
 async def create_table_db():
@@ -70,11 +77,13 @@ async def get_account(creds: GetUser, session: SessionDep):
             save_salt=user.salt
         )
 
-        return {
-            'account ID': user.username,
-            'account first name': user.first_name,
-            'account create at': user.create_at,
-        }
+        if user and is_verified:
+
+            return {
+                'account ID': user.username,
+                'account first name': user.first_name,
+                'account create at': user.create_at,
+            }
 
     except Exception as e:
         return {'error': e}

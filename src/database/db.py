@@ -26,3 +26,9 @@ async def get_current_user(user_name: str, session: AsyncSession):
         return current_user
     except Exception as e:
         return {'error': e}
+
+async def get_all_users(session: get_session()):
+    query = select(UserModel)
+    user = session.execute(query).scalars().all()
+
+    return user
