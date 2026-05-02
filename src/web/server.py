@@ -123,8 +123,8 @@ async def login(creds: Login, session: SessionDep, request: Request, response: R
         access_token = security.create_access_token(uid=creds.username,fresh=True)
         refresh_token = security.create_refresh_token(uid=creds.username)
 
-        security.set_access_cookies(response, access_token)
-        security.set_refresh_cookies(response, refresh_token)
+        security.set_access_cookies(access_token, response)
+        security.set_refresh_cookies(refresh_token, response)
 
         return {
             'access_token': access_token,
