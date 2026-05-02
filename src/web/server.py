@@ -35,6 +35,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler) #type
 
 app.add_middleware(CORSMiddleware, #type: ignore
                    allow_origins=['*'],
+                   allow_credentials=True,
                    allow_methods=['*'],
                    allow_headers=['*'])
 
