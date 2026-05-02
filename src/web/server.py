@@ -117,7 +117,7 @@ async def login(creds: Login, session: SessionDep, request: Request, response: R
     user = await search_user(username=creds.username, password=creds.password, session=session)
 
     if not user:
-        raise HTTPException(status_code=404, detail='User not found')
+        raise HTTPException(status_code=401, detail='Incorrect data')
 
     else:
         access_token = security.create_access_token(uid=creds.username,fresh=True)
