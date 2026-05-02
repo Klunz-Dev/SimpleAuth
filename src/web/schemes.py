@@ -6,6 +6,6 @@ class CreateUser(BaseModel):
     mail: EmailStr = Field(..., title="You're mail")
     password: str = Field(..., title="You're password (min: 8, max: 32)", min_length=8, max_length=32)
 
-class GetUser(BaseModel):
+class Login(BaseModel):
     username: str = Field(..., title="You're username", min_length=1, max_length=16)
     password: str = Field(..., title="You're password (min: 8, max: 32)", min_length=8, max_length=32)
